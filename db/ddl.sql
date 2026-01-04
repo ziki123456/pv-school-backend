@@ -98,3 +98,75 @@ CREATE TABLE IF NOT EXISTS grade (
     FOREIGN KEY (teacher_id) REFERENCES teacher(id_teacher)
     ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS timetable_lesson (
+  id_timetable_lesson BIGINT NOT NULL AUTO_INCREMENT,
+  class_id BIGINT NOT NULL,
+  teacher_id BIGINT NOT NULL,
+  subject_id BIGINT NOT NULL,
+  weekday TINYINT NOT NULL,          -- 1..5 validace v aplikaci
+  lesson_no TINYINT NOT NULL,        -- 1..10 validace v aplikaci
+  room VARCHAR(20) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_timetable_lesson),
+
+  UNIQUE KEY uq_class_slot (class_id, weekday, lesson_no),
+  UNIQUE KEY uq_teacher_slot (teacher_id, weekday, lesson_no),
+
+  CONSTRAINT fk_tt_class FOREIGN KEY (class_id) REFERENCES class(id_class)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_tt_teacher FOREIGN KEY (teacher_id) REFERENCES teacher(id_teacher)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT fk_tt_subject FOREIGN KEY (subject_id) REFERENCES subject(id_subject)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+
+CREATE OR REPLACE VIEW v_class_timetable AS
+SELECT
+    c.id_class                              AS class_id,
+    c.name                                  AS class_name,
+    tl.weekday                              AS weekday,
+    tl.lesson_no                            AS lesson_no,
+    s.id_subject                            AS subject_id,
+    s.name                                  AS subject_name,
+    t.id_teacher                            AS teacher_id,
+    CONCAT(t.first_name, ' ', t.last_name)  AS teacher_name,
+    tl.room                                 AS room
+FROM timetable_lesson tl
+JOIN class c
+    ON c.id_class = tl.class_id
+JOIN subject s
+    ON s.id_subject = tl.subject_id
+JOIN teacher t
+    ON t.id_teacher = tl.teacher_id;
+
+SELECT *
+FROM v_class_timetable
+ORDER BY class_name, weekday, lesson_no;
+
+
+CREATE OR REPLACE VIEW v_report_class_subject_grades AS
+SELECT
+    c.id_class                 AS class_id,
+    c.name                     AS class_name,
+    s2.id_subject              AS subject_id,
+    s2.name                    AS subject_name,
+    COUNT(g.id_grade)          AS grade_count,
+    AVG(g.value)               AS avg_grade,
+    MAX(g.graded_at)           AS last_graded_at
+FROM grade g
+JOIN student st
+    ON st.id_student = g.student_id
+JOIN class c
+    ON c.id_class = st.class_id
+JOIN subject s2
+    ON s2.id_subject = g.subject_id
+GROUP BY
+    c.id_class, c.name,
+    s2.id_subject, s2.name;
+
+SELECT *
+FROM v_report_class_subject_grades
+ORDER BY class_name, subject_name;
