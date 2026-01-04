@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pathlib import Path
+from app.api.teachers import router as teachers_router
 
 from app.core.config import AppConfig
 from app.api.db_ping import router as db_router
@@ -15,6 +16,7 @@ app.state.config = config
 
 app.include_router(db_router)
 app.include_router(db_tx_router)
+app.include_router(teachers_router)
 
 
 @app.get("/api/health")
