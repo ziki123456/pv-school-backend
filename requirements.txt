@@ -5,3 +5,5 @@ mysql-connector-python
 PyYAML
 python-multipart
 email-validator
+jinja2
+python-multipart
