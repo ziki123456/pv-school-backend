@@ -1,5 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Rozvrh třídy</h1>
-  <p>Zatím jen stránka. V dalším kroku sem přidáme výběr třídy a data z VIEW.</p>
+
+  <form method="get" action="/timetable">
+    <label for="class_id">Třída:</label>
+    <select name="class_id" id="class_id">
+      <option value="">— vyber —</option>
+      {% for c in classes %}
+        <option value="{{ c.id_class }}" {% if selected_class_id == c.id_class %}selected{% endif %}>
+          {{ c.name }} ({{ c.school_year }})
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit">Zobrazit</button>
+  </form>
+
+  {% if selected_class_id %}
+    <h3>Výsledek</h3>
+    {% if rows|length == 0 %}
+      <p><em>Pro tuto třídu nejsou žádné hodiny.</em></p>
+    {% else %}
+      <table>
+        <thead>
+          <tr>
+            <th>Den (1–5)</th>
+            <th>Hodina</th>
+            <th>Předmět</th>
+            <th>Učitel</th>
+            <th>Místnost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>{{ r.weekday }}</td>
+            <td>{{ r.lesson_no }}</td>
+            <td>{{ r.subject_name }}</td>
+            <td>{{ r.teacher_name }}</td>
+            <td>{{ r.room }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
 {% endblock %}
