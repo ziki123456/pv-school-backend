@@ -18,13 +18,13 @@ app = FastAPI(title="PV School App")
 app.state.config = config
 
 
-app.include_router(reports_router)
-app.include_router(timetable_router)
-
 app.include_router(db_router)
 app.include_router(db_tx_router)
 app.include_router(teachers_router)
 app.include_router(grades_router)
+app.include_router(reports_router)
+app.include_router(timetable_router)
+
 
 
 @app.get("/api/health")
