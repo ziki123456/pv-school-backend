@@ -55,3 +55,12 @@ def get_teacher(teacher_id: int, request: Request):
     if teacher is None:
         raise HTTPException(status_code=404, detail="Teacher not found")
     return teacher
+
+@router.get("/api/teachers")
+def list_teachers(
+    request: Request,
+    limit: int = 50,
+    offset: int = 0,
+):
+    repo = TeacherRepository(_db_cfg(request))
+    return repo.list_all(limit=limit, offset=offset)
