@@ -47,3 +47,11 @@ def create_teacher(payload: TeacherCreateIn, request: Request):
     if teacher is None:
         raise HTTPException(status_code=500, detail="Teacher insert failed")
     return teacher
+
+@router.get("/api/teachers/{teacher_id}")
+def get_teacher(teacher_id: int, request: Request):
+    repo = TeacherRepository(_db_cfg(request))
+    teacher = repo.get_by_id(teacher_id)
+    if teacher is None:
+        raise HTTPException(status_code=404, detail="Teacher not found")
+    return teacher
