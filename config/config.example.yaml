@@ -1,0 +1,11 @@
+db:
+  host: "127.0.0.1"
+  port: 3306
+  database: "pv_school"
+  user: "pv_user"
+  password: "CHANGE_ME"
+  charset: "utf8mb4"
+
+app:
+  host: "127.0.0.1"
+  port: 8000
