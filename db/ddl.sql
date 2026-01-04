@@ -66,3 +66,35 @@ CREATE TABLE IF NOT EXISTS student (
     FOREIGN KEY (class_id) REFERENCES class(id_class)
     ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+-- přidáme student.last_grade_at, ať máme smysluplnou multi-table transakci
+ALTER TABLE student
+  ADD COLUMN IF NOT EXISTS last_grade_at DATETIME NULL;
+
+-- GRADE (obsahuje FLOAT -> splní požadavek na reálné číslo)
+CREATE TABLE IF NOT EXISTS grade (
+  id_grade BIGINT NOT NULL AUTO_INCREMENT,
+  student_id BIGINT NOT NULL,
+  subject_id BIGINT NOT NULL,
+  teacher_id BIGINT NULL,                  -- známku může zadat i "systém" / později
+  value FLOAT NOT NULL,                    -- FLOAT požadovaný typ
+  graded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  note VARCHAR(255) NULL,
+  PRIMARY KEY (id_grade),
+
+  KEY idx_grade_student (student_id),
+  KEY idx_grade_subject (subject_id),
+  KEY idx_grade_teacher (teacher_id),
+
+  CONSTRAINT fk_grade_student
+    FOREIGN KEY (student_id) REFERENCES student(id_student)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT fk_grade_subject
+    FOREIGN KEY (subject_id) REFERENCES subject(id_subject)
+    ON DELETE RESTRICT ON UPDATE CASCADE,
+
+  CONSTRAINT fk_grade_teacher
+    FOREIGN KEY (teacher_id) REFERENCES teacher(id_teacher)
+    ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
