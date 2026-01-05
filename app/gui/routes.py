@@ -2,10 +2,10 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-# ⬇⬇⬇ NOVÉ IMPORTY (to je to, co jsi nechápal)
 from app.db.connection import DbConfig
 from app.db.repositories.class_repository import ClassRepository
 from app.db.repositories.timetable_view_repository import TimetableViewRepository
+from app.db.repositories.report_repository import ReportRepository
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/gui/templates")
@@ -62,4 +62,16 @@ def gui_timetable(request: Request, class_id: int | None = None):
             "selected_class_id": selected_class_id,
             "rows": rows,
         },
+    )
+
+
+@router.get("/reports", response_class=HTMLResponse)
+def gui_reports(request: Request):
+    cfg = _db_cfg(request)
+    repo = ReportRepository(cfg)
+    rows = repo.get_class_subject_grades()
+
+    return templates.TemplateResponse(
+        "report.html",
+        {"request": request, "rows": rows},
     )
