@@ -8,6 +8,7 @@ from app.api.db_ping import router as db_router
 from app.api.db_tx_test import router as db_tx_router
 from app.api.reports import router as reports_router
 from app.api.timetable import router as timetable_router
+from app.api.imports import router as imports_router
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "config" / "config.yaml"
@@ -25,6 +26,7 @@ app.include_router(grades_router)
 app.include_router(reports_router)
 app.include_router(timetable_router)
 app.include_router(gui_router)
+app.include_router(imports_router)
 
 
 
