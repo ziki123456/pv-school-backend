@@ -7,4 +7,41 @@
     <li><a href="/timetable">Rozvrh třídy</a></li>
     <li><a href="/reports">Report známek</a></li>
   </ul>
+
+<h2>Import / Export</h2>
+
+<div class="card">
+  <h3>Export</h3>
+  <p>
+    <a class="btn" href="/api/export/teachers.csv">Export teachers (CSV)</a>
+    <a class="btn" href="/api/export/students.csv">Export students (CSV)</a>
+  </p>
+</div>
+
+<div class="card">
+  <h3>Import (CSV ze složky db/import)</h3>
+  <p>
+    <button class="btn" id="importTeachersBtn">Import teachers</button>
+    <button class="btn" id="importStudentsBtn">Import students</button>
+  </p>
+  <pre id="importResult" style="white-space: pre-wrap;"></pre>
+</div>
+
+<script>
+  async function runImport(url) {
+    const out = document.getElementById("importResult");
+    out.textContent = "Running import...";
+    try {
+      const resp = await fetch(url, { method: "POST" });
+      const text = await resp.text();
+      out.textContent = text;
+    } catch (e) {
+      out.textContent = "Import failed: " + e;
+    }
+  }
+
+  document.getElementById("importTeachersBtn").addEventListener("click", () => runImport("/api/import/teachers"));
+  document.getElementById("importStudentsBtn").addEventListener("click", () => runImport("/api/import/students"));
+</script>
+
 {% endblock %}
