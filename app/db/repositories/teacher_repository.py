@@ -53,28 +53,30 @@ class TeacherRepository:
             created_at=row[6],
         )
 
-def list_all(self, limit: int = 50, offset: int = 0):
-    sql = """
-    SELECT id_teacher, first_name, last_name, email, hired_date, is_active, created_at
-    FROM teacher
-    ORDER BY id_teacher
-    LIMIT %s OFFSET %s
-    """
-    with transaction(self._cfg) as conn:
-        cur = conn.cursor()
-        cur.execute(sql, (int(limit), int(offset)))
-        rows = cur.fetchall()
+    def list_all(self, limit: int = 50, offset: int = 0):
+        sql = """
+        SELECT id_teacher, first_name, last_name, email, hired_date, is_active, created_at
+        FROM teacher
+        ORDER BY id_teacher
+        LIMIT %s OFFSET %s
+        """
+        with transaction(self._cfg) as conn:
+            cur = conn.cursor()
+            cur.execute(sql, (int(limit), int(offset)))
+            rows = cur.fetchall()
 
-    return [
-        Teacher(
-            id_teacher=int(r[0]),
-            first_name=r[1],
-            last_name=r[2],
-            email=r[3],
-            hired_date=r[4],
-            is_active=bool(r[5]),
-            created_at=r[6],
-        )
-        for r in rows
-    ]
+        return [
+            Teacher(
+                id_teacher=int(r[0]),
+                first_name=r[1],
+                last_name=r[2],
+                email=r[3],
+                hired_date=r[4],
+                is_active=bool(r[5]),
+                created_at=r[6],
+            )
+            for r in rows
+        ]
+
+
 
