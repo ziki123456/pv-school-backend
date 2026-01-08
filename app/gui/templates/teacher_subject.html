@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Teacher ↔ Subject Assignment (M:N)</h1>
+
+  <form method="get" action="/teacher-subject">
+    <label>Select teacher:</label>
+    <select name="teacher_id" required>
+      <option value="">-- choose --</option>
+      {% for t in teachers %}
+        <option value="{{ t.id_teacher }}" {% if selected_teacher_id and t.id_teacher == selected_teacher_id %}selected{% endif %}>
+          {{ t.id_teacher }} – {{ t.first_name }} {{ t.last_name }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit">Load</button>
+  </form>
+
+  {% if selected_teacher %}
+    <hr />
+    <h2>Selected teacher</h2>
+    <p><b>{{ selected_teacher.first_name }} {{ selected_teacher.last_name }}</b> (ID {{ selected_teacher.id_teacher }})</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      <div>
+        <h3>Assigned subjects</h3>
+
+        {% if assigned and assigned|length > 0 %}
+          <ul>
+            {% for s in assigned %}
+              <li>
+                <b>{{ s.name }}</b> ({{ s.code }}, {{ s.subject_type }})
+                <button type="button" onclick="removeSubject({{ selected_teacher.id_teacher }}, {{ s.id_subject }})">Remove</button>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No assigned subjects.</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <h3>Assign new subject</h3>
+
+        <label>Subject:</label>
+        <select id="subjectSelect">
+          {% for s in subjects %}
+            <option value="{{ s.id_subject }}">{{ s.name }} ({{ s.code }}, {{ s.subject_type }})</option>
+          {% endfor %}
+        </select>
+        <button type="button" onclick="assignSelected()">Assign</button>
+
+        <pre id="result" style="white-space: pre-wrap;"></pre>
+      </div>
+    </div>
+
+    <script>
+      async function assignSelected() {
+        const out = document.getElementById("result");
+        out.textContent = "";
+        const subjectId = document.getElementById("subjectSelect").value;
+
+        try {
+          const resp = await fetch(`/api/teachers/{{ selected_teacher.id_teacher }}/subjects/${subjectId}`, { method: "POST" });
+          const text = await resp.text();
+
+          if (resp.ok) {
+            // reload page to refresh assigned list
+            window.location.href = `/teacher-subject?teacher_id={{ selected_teacher.id_teacher }}`;
+            return;
+          }
+          out.textContent = `Assign failed (${resp.status}): ${text}`;
+        } catch (e) {
+          out.textContent = "Assign failed: " + e;
+        }
+      }
+
+      async function removeSubject(teacherId, subjectId) {
+        const out = document.getElementById("result");
+        out.textContent = "";
+
+        if (!confirm("Remove this subject from teacher?")) return;
+
+        try {
+          const resp = await fetch(`/api/teachers/${teacherId}/subjects/${subjectId}`, { method: "DELETE" });
+          const text = await resp.text();
+
+          if (resp.ok) {
+            window.location.href = `/teacher-subject?teacher_id=${teacherId}`;
+            return;
+          }
+          out.textContent = `Remove failed (${resp.status}): ${text}`;
+        } catch (e) {
+          out.textContent = "Remove failed: " + e;
+        }
+      }
+    </script>
+  {% endif %}
+{% endblock %}
