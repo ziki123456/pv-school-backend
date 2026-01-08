@@ -103,3 +103,14 @@ def gui_teacher_detail(request: Request, teacher_id: int):
         "teacher_detail.html",
         {"request": request, "teacher": teacher, "teacher_id": teacher_id},
     )
+
+@router.get("/teachers/{teacher_id}/edit", response_class=HTMLResponse)
+def gui_teacher_edit(request: Request, teacher_id: int):
+    cfg = _db_cfg(request)
+    repo = TeacherRepository(cfg)
+    teacher = repo.get_by_id(int(teacher_id))
+
+    return templates.TemplateResponse(
+        "teacher_edit.html",
+        {"request": request, "teacher": teacher, "teacher_id": teacher_id},
+    )

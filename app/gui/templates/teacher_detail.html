@@ -12,7 +12,8 @@
     <p><b>Created at:</b> {{ teacher.created_at }}</p>
 
     <p>
-      <a href="/teachers">← Back to list</a>
+      <a href="/teachers">← Back to list</a> |
+      <a href="/teachers/{{ teacher.id_teacher }}/edit">Edit</a>
     </p>
 
     <hr />
@@ -33,12 +34,10 @@
           const text = await resp.text();
 
           if (resp.ok) {
-            // Redirect back to list after successful delete
             window.location.href = "/teachers";
             return;
           }
 
-          // Show API error message (e.g., 409 FK constraint)
           out.textContent = "Delete failed (" + resp.status + "): " + text;
         } catch (e) {
           out.textContent = "Delete failed: " + e;
