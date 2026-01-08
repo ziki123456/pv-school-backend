@@ -7,6 +7,7 @@ from app.db.repositories.class_repository import ClassRepository
 from app.db.repositories.timetable_view_repository import TimetableViewRepository
 from app.db.repositories.report_repository import ReportRepository
 from app.db.repositories.teacher_repository import TeacherRepository
+from app.db.repositories.student_repository import StudentRepository
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/gui/templates")
@@ -113,4 +114,42 @@ def gui_teacher_edit(request: Request, teacher_id: int):
     return templates.TemplateResponse(
         "teacher_edit.html",
         {"request": request, "teacher": teacher, "teacher_id": teacher_id},
+    )
+
+# -----------------------
+# STUDENTS (GUI)
+# -----------------------
+@router.get("/students", response_class=HTMLResponse)
+def gui_students(request: Request):
+    cfg = _db_cfg(request)
+    repo = StudentRepository(cfg)
+    students = repo.list_all(limit=500, offset=0)
+
+    return templates.TemplateResponse(
+        "students.html",
+        {"request": request, "students": students},
+    )
+
+
+@router.get("/students/{student_id}", response_class=HTMLResponse)
+def gui_student_detail(request: Request, student_id: int):
+    cfg = _db_cfg(request)
+    repo = StudentRepository(cfg)
+    student = repo.get_by_id(int(student_id))
+
+    return templates.TemplateResponse(
+        "student_detail.html",
+        {"request": request, "student": student, "student_id": student_id},
+    )
+
+
+@router.get("/students/{student_id}/edit", response_class=HTMLResponse)
+def gui_student_edit(request: Request, student_id: int):
+    cfg = _db_cfg(request)
+    repo = StudentRepository(cfg)
+    student = repo.get_by_id(int(student_id))
+
+    return templates.TemplateResponse(
+        "student_edit.html",
+        {"request": request, "student": student, "student_id": student_id},
     )
