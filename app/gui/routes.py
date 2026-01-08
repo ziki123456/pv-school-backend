@@ -8,6 +8,9 @@ from app.db.repositories.timetable_view_repository import TimetableViewRepositor
 from app.db.repositories.report_repository import ReportRepository
 from app.db.repositories.teacher_repository import TeacherRepository
 from app.db.repositories.student_repository import StudentRepository
+from app.db.repositories.subject_repository import SubjectRepository
+from app.db.repositories.teacher_subject_repository import TeacherSubjectRepository
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/gui/templates")
@@ -152,4 +155,47 @@ def gui_student_edit(request: Request, student_id: int):
     return templates.TemplateResponse(
         "student_edit.html",
         {"request": request, "student": student, "student_id": student_id},
+    )
+
+
+# -----------------------
+# TEACHER ↔ SUBJECT (M:N)
+# -----------------------
+@router.get("/teacher-subject", response_class=HTMLResponse)
+def gui_teacher_subject(request: Request, teacher_id: int | None = None):
+    cfg = _db_cfg(request)
+
+    t_repo = TeacherRepository(cfg)
+    teachers = t_repo.list_all(limit=500, offset=0)
+
+    s_repo = SubjectRepository(cfg)
+    subjects = s_repo.list_all(active_only=True)
+
+    selected_teacher = None
+    assigned = []
+
+    if teacher_id is not None:
+        selected_teacher = t_repo.get_by_id(int(teacher_id))
+        ts_repo = TeacherSubjectRepository(cfg)
+        assigned_rows = ts_repo.list_subjects_for_teacher(int(teacher_id))
+        assigned = [
+            {
+                "id_subject": int(r[0]),
+                "name": r[1],
+                "code": r[2],
+                "subject_type": r[3],
+            }
+            for r in assigned_rows
+        ]
+
+    return templates.TemplateResponse(
+        "teacher_subject.html",
+        {
+            "request": request,
+            "teachers": teachers,
+            "subjects": subjects,
+            "selected_teacher": selected_teacher,
+            "selected_teacher_id": teacher_id,
+            "assigned": assigned,
+        },
     )

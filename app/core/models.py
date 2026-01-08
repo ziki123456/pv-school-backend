@@ -41,3 +41,13 @@ class Student:
     is_active: bool
     created_at: datetime
     last_grade_at: Optional[datetime]
+
+
+@dataclass
+class Subject:
+    id_subject: int
+    name: str
+    code: str
+    subject_type: str
+    is_active: bool
+    created_at: datetime

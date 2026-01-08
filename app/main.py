@@ -11,6 +11,7 @@ from app.api.timetable import router as timetable_router
 from app.api.imports import router as imports_router
 from app.api.exports import router as exports_router
 from app.api.students import router as students_router
+from app.api.teacher_subject import router as teacher_subject_router
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +33,7 @@ app.include_router(gui_router)
 app.include_router(imports_router)
 app.include_router(exports_router)
 app.include_router(students_router)
+app.include_router(teacher_subject_router)
 
 
 
