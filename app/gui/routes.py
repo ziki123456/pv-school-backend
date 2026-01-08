@@ -6,6 +6,7 @@ from app.db.connection import DbConfig
 from app.db.repositories.class_repository import ClassRepository
 from app.db.repositories.timetable_view_repository import TimetableViewRepository
 from app.db.repositories.report_repository import ReportRepository
+from app.db.repositories.teacher_repository import TeacherRepository
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/gui/templates")
@@ -74,4 +75,31 @@ def gui_reports(request: Request):
     return templates.TemplateResponse(
         "report.html",
         {"request": request, "rows": rows},
+    )
+
+
+# -----------------------
+# TEACHERS (GUI)
+# -----------------------
+@router.get("/teachers", response_class=HTMLResponse)
+def gui_teachers(request: Request):
+    cfg = _db_cfg(request)
+    repo = TeacherRepository(cfg)
+    teachers = repo.list_all(limit=500, offset=0)
+
+    return templates.TemplateResponse(
+        "teachers.html",
+        {"request": request, "teachers": teachers},
+    )
+
+
+@router.get("/teachers/{teacher_id}", response_class=HTMLResponse)
+def gui_teacher_detail(request: Request, teacher_id: int):
+    cfg = _db_cfg(request)
+    repo = TeacherRepository(cfg)
+    teacher = repo.get_by_id(int(teacher_id))
+
+    return templates.TemplateResponse(
+        "teacher_detail.html",
+        {"request": request, "teacher": teacher, "teacher_id": teacher_id},
     )

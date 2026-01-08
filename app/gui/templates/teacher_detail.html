@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Teacher Detail</h1>
+
+  {% if teacher %}
+    <p><b>ID:</b> {{ teacher.id_teacher }}</p>
+    <p><b>First name:</b> {{ teacher.first_name }}</p>
+    <p><b>Last name:</b> {{ teacher.last_name }}</p>
+    <p><b>Email:</b> {{ teacher.email or "" }}</p>
+    <p><b>Hired date:</b> {{ teacher.hired_date or "" }}</p>
+    <p><b>Active:</b> {{ "yes" if teacher.is_active else "no" }}</p>
+    <p><b>Created at:</b> {{ teacher.created_at }}</p>
+
+    <p>
+      <a href="/teachers">← Back to list</a>
+    </p>
+
+    <hr />
+
+    <h3>Delete teacher</h3>
+    <button id="deleteBtn">Delete</button>
+    <pre id="deleteResult" style="white-space: pre-wrap;"></pre>
+
+    <script>
+      document.getElementById("deleteBtn").addEventListener("click", async () => {
+        const out = document.getElementById("deleteResult");
+        out.textContent = "";
+
+        if (!confirm("Really delete this teacher?")) return;
+
+        try {
+          const resp = await fetch("/api/teachers/{{ teacher.id_teacher }}", { method: "DELETE" });
+          const text = await resp.text();
+
+          if (resp.ok) {
+            // Redirect back to list after successful delete
+            window.location.href = "/teachers";
+            return;
+          }
+
+          // Show API error message (e.g., 409 FK constraint)
+          out.textContent = "Delete failed (" + resp.status + "): " + text;
+        } catch (e) {
+          out.textContent = "Delete failed: " + e;
+        }
+      });
+    </script>
+  {% else %}
+    <p><b>Teacher not found.</b></p>
+    <p><a href="/teachers">← Back to list</a></p>
+  {% endif %}
+
+{% endblock %}
