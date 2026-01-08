@@ -21,3 +21,23 @@ class Teacher:
     hired_date: Optional[date]
     is_active: bool
     created_at: datetime
+
+@dataclass
+class StudentCreate:
+    first_name: str
+    last_name: str
+    birth_date: Optional[date] = None
+    class_id: Optional[int] = None
+    is_active: bool = True
+
+
+@dataclass
+class Student:
+    id_student: int
+    first_name: str
+    last_name: str
+    birth_date: Optional[date]
+    class_id: Optional[int]
+    is_active: bool
+    created_at: datetime
+    last_grade_at: Optional[datetime]
