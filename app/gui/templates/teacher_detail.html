@@ -1,30 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Teacher Detail</h1>
 
   {% if teacher %}
-    <p><b>ID:</b> {{ teacher.id_teacher }}</p>
-    <p><b>First name:</b> {{ teacher.first_name }}</p>
-    <p><b>Last name:</b> {{ teacher.last_name }}</p>
-    <p><b>Email:</b> {{ teacher.email or "" }}</p>
-    <p><b>Hired date:</b> {{ teacher.hired_date or "" }}</p>
-    <p><b>Active:</b> {{ "yes" if teacher.is_active else "no" }}</p>
-    <p><b>Created at:</b> {{ teacher.created_at }}</p>
+    <div class="card">
+      <h1 style="margin:0 0 8px;">Teacher Detail</h1>
+      <p style="margin:0; color: var(--muted);">
+        View and manage a single teacher record.
+      </p>
+    </div>
 
-    <p>
-      <a href="/teachers">← Back to list</a> |
-      <a href="/teachers/{{ teacher.id_teacher }}/edit">Edit</a>
-    </p>
+    <div class="grid" style="margin-top: 14px;">
+      <div class="card">
+        <h3>Profile</h3>
 
-    <hr />
+        <table class="table">
+          <tbody>
+            <tr><th style="width: 180px;">ID</th><td>{{ teacher.id_teacher }}</td></tr>
+            <tr><th>First name</th><td>{{ teacher.first_name }}</td></tr>
+            <tr><th>Last name</th><td>{{ teacher.last_name }}</td></tr>
+            <tr><th>Email</th><td>{{ teacher.email or "" }}</td></tr>
+            <tr><th>Hired date</th><td>{{ teacher.hired_date or "" }}</td></tr>
+            <tr><th>Active</th><td>{{ "yes" if teacher.is_active else "no" }}</td></tr>
+            <tr><th>Created at</th><td>{{ teacher.created_at }}</td></tr>
+          </tbody>
+        </table>
 
-    <h3>Delete teacher</h3>
-    <button id="deleteBtn">Delete</button>
-    <pre id="deleteResult" style="white-space: pre-wrap;"></pre>
+        <div class="actions" style="margin-top: 12px;">
+          <a class="btn" href="/teachers">← Back to list</a>
+          <a class="btn btn-primary" href="/teachers/{{ teacher.id_teacher }}/edit">Edit</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Danger zone</h3>
+        <p style="margin:0 0 10px; color: var(--muted);">
+          Deleting may fail if the teacher is referenced by timetable/subjects (FK constraint).
+        </p>
+
+        <div class="actions">
+          <button class="btn btn-danger" id="deleteBtn">Delete</button>
+        </div>
+
+        <div id="deleteResultBox" class="alert alert-error" style="display:none; margin-top:12px;">
+          <pre id="deleteResult" style="white-space: pre-wrap; margin:0;"></pre>
+        </div>
+      </div>
+    </div>
 
     <script>
       document.getElementById("deleteBtn").addEventListener("click", async () => {
+        const box = document.getElementById("deleteResultBox");
         const out = document.getElementById("deleteResult");
+        box.style.display = "none";
         out.textContent = "";
 
         if (!confirm("Really delete this teacher?")) return;
@@ -38,15 +65,23 @@
             return;
           }
 
+          box.style.display = "block";
           out.textContent = "Delete failed (" + resp.status + "): " + text;
         } catch (e) {
+          box.style.display = "block";
           out.textContent = "Delete failed: " + e;
         }
       });
     </script>
+
   {% else %}
-    <p><b>Teacher not found.</b></p>
-    <p><a href="/teachers">← Back to list</a></p>
+    <div class="card">
+      <h1 style="margin:0 0 8px;">Teacher Detail</h1>
+      <p style="margin:0; color: var(--muted);">Teacher not found.</p>
+      <div class="actions" style="margin-top: 12px;">
+        <a class="btn" href="/teachers">← Back to list</a>
+      </div>
+    </div>
   {% endif %}
 
 {% endblock %}

@@ -1,70 +1,117 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Edit Teacher</h1>
 
   {% if teacher %}
-    <p><a href="/teachers/{{ teacher.id_teacher }}">← Back to detail</a></p>
+    <div class="card">
+      <h1 style="margin:0 0 8px;">Edit Teacher</h1>
+      <p style="margin:0; color: var(--muted);">
+        Update teacher information and save changes.
+      </p>
+      <div class="actions" style="margin-top: 12px;">
+        <a class="btn" href="/teachers/{{ teacher.id_teacher }}">← Back to detail</a>
+        <a class="btn" href="/teachers">Teachers</a>
+      </div>
+    </div>
 
-    <form id="editForm">
-      <label>First name</label><br />
-      <input type="text" name="first_name" value="{{ teacher.first_name }}" required /><br /><br />
+    <div class="card" style="margin-top: 14px;">
+      <form id="editForm">
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div>
+            <div class="field">
+              <label>First name</label>
+              <input type="text" name="first_name" value="{{ teacher.first_name }}" required />
+            </div>
 
-      <label>Last name</label><br />
-      <input type="text" name="last_name" value="{{ teacher.last_name }}" required /><br /><br />
+            <div class="field">
+              <label>Last name</label>
+              <input type="text" name="last_name" value="{{ teacher.last_name }}" required />
+            </div>
 
-      <label>Email</label><br />
-      <input type="email" name="email" value="{{ teacher.email or '' }}" /><br /><br />
+            <div class="field">
+              <label>Email</label>
+              <input type="email" name="email" value="{{ teacher.email or '' }}" placeholder="name@example.com" />
+            </div>
+          </div>
 
-      <label>Hired date</label><br />
-      <input type="date" name="hired_date" value="{{ teacher.hired_date or '' }}" /><br /><br />
+          <div>
+            <div class="field">
+              <label>Hired date</label>
+              <input type="date" name="hired_date" value="{{ teacher.hired_date or '' }}" />
+            </div>
 
-      <label>
-        <input type="checkbox" name="is_active" {% if teacher.is_active %}checked{% endif %} />
-        Active
-      </label><br /><br />
+            <div class="field">
+              <label>Status</label>
+              <select name="is_active_select">
+                <option value="true" {% if teacher.is_active %}selected{% endif %}>Active</option>
+                <option value="false" {% if not teacher.is_active %}selected{% endif %}>Inactive</option>
+              </select>
+            </div>
 
-      <button type="submit">Save</button>
-      <pre id="result" style="white-space: pre-wrap;"></pre>
-    </form>
+            <div class="alert" style="margin-top: 6px;">
+              <b>Tip:</b> Keep email unique if your DB enforces it.
+            </div>
+          </div>
+        </div>
+
+        <div class="actions" style="margin-top: 14px;">
+          <button class="btn btn-primary" type="submit">Save changes</button>
+        </div>
+
+        <div id="resultBox" class="alert alert-error" style="display:none; margin-top:12px;">
+          <pre id="result" style="white-space: pre-wrap; margin:0;"></pre>
+        </div>
+      </form>
+    </div>
 
     <script>
       document.getElementById("editForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        const box = document.getElementById("resultBox");
         const out = document.getElementById("result");
+        box.style.display = "none";
         out.textContent = "";
 
         const form = e.target;
+
         const data = {
           first_name: form.first_name.value,
           last_name: form.last_name.value,
           email: form.email.value ? form.email.value : null,
           hired_date: form.hired_date.value ? form.hired_date.value : null,
-          is_active: form.is_active.checked
+          is_active: (form.is_active_select.value === "true")
         };
 
         try {
           const resp = await fetch("/api/teachers/{{ teacher.id_teacher }}", {
             method: "PUT",
-            headers: { "Content-Type": "application/json", "accept": "application/json" },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
           });
-
           const text = await resp.text();
 
           if (resp.ok) {
-            // after successful update, go back to detail
             window.location.href = "/teachers/{{ teacher.id_teacher }}";
             return;
           }
 
+          box.style.display = "block";
           out.textContent = "Update failed (" + resp.status + "): " + text;
         } catch (err) {
+          box.style.display = "block";
           out.textContent = "Update failed: " + err;
         }
       });
     </script>
+
   {% else %}
-    <p><b>Teacher not found.</b></p>
-    <p><a href="/teachers">← Back to list</a></p>
+    <div class="card">
+      <h1 style="margin:0 0 8px;">Edit Teacher</h1>
+      <p style="margin:0; color: var(--muted);">Teacher not found.</p>
+      <div class="actions" style="margin-top: 12px;">
+        <a class="btn" href="/teachers">← Back to list</a>
+      </div>
+    </div>
   {% endif %}
+
 {% endblock %}

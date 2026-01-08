@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+
 from app.api.teachers import router as teachers_router
 from app.api.grades import router as grades_router
 from app.gui.routes import router as gui_router
@@ -14,13 +16,18 @@ from app.api.students import router as students_router
 from app.api.teacher_subject import router as teacher_subject_router
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-CONFIG_PATH = BASE_DIR / "config" / "config.yaml"
+# BASE_DIR = .../app (protoze main.py je v app/)
+BASE_DIR = Path(__file__).resolve().parent
+CONFIG_PATH = BASE_DIR.parent / "config" / "config.yaml"
 
 config = AppConfig(CONFIG_PATH)
 
 app = FastAPI(title="PV School App")
 app.state.config = config
+
+# ✅ STATIC: .../app/gui/static -> /static/*
+STATIC_DIR = BASE_DIR / "gui" / "static"
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 app.include_router(db_router)
@@ -34,7 +41,6 @@ app.include_router(imports_router)
 app.include_router(exports_router)
 app.include_router(students_router)
 app.include_router(teacher_subject_router)
-
 
 
 @app.get("/api/health")

@@ -1,27 +1,33 @@
 <!doctype html>
-<html lang="cs">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PVSchool</title>
-  <style>
-    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
-    nav a { margin-right: 12px; }
-    .container { max-width: 1100px; margin: 0 auto; }
-  </style>
+
+  <!-- GUI stylesheet -->
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="icon" href="data:,">
 </head>
 <body>
   <div class="container">
-    <nav>
-      <a href="/">Dashboard</a>
-      <a href="/teachers">Teachers</a>
-      <a href="/students">Students</a>
-      <a href="/teacher-subject">Teacher↔Subject</a>
-      <a href="/timetable">Rozvrh</a>
-      <a href="/reports">Report známek</a>
-      <a href="/docs">Swagger</a>
-    </nav>
-    <hr />
+    <header class="header">
+      <div class="brand">
+        <h1>School System</h1>
+        <p>Database portfolio app (FastAPI + MySQL)</p>
+      </div>
+
+      <nav class="nav">
+        <a href="/">Dashboard</a>
+        <a href="/teachers">Teachers</a>
+        <a href="/students">Students</a>
+        <a href="/teacher-subject">Teacher↔Subject</a>
+        <a href="/timetable">Timetable</a>
+        <a href="/reports">Reports</a>
+        <a href="/docs">Swagger</a>
+      </nav>
+    </header>
+
     {% block content %}{% endblock %}
   </div>
 </body>

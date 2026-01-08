@@ -1,50 +1,70 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>PVSchool – GUI</h1>
-  <p>Minimalistické webové rozhraní (Jinja2). Slouží jako GUI nad DB.</p>
 
-  <ul>
-    <li><a href="/timetable">Rozvrh třídy</a></li>
-    <li><a href="/teachers">Teachers</a></li>
-    <li><a href="/students">Students</a></li>
-    <li><a href="/teacher-subject">Teacher↔Subject assignment</a></li>
-    <li><a href="/reports">Report známek</a></li>
-  </ul>
+  <div class="card">
+    <h1 style="margin:0 0 8px;">School System</h1>
+    <p style="margin:0; color: var(--muted);">
+    </p>
+  </div>
 
-<h2>Import / Export</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Quick navigation</h3>
+      <p style="margin:0 0 10px; color: var(--muted);">Open core pages of the application.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/teachers">Teachers</a>
+        <a class="btn btn-primary" href="/students">Students</a>
+        <a class="btn" href="/teacher-subject">Teacher↔Subject</a>
+        <a class="btn" href="/timetable">Timetable</a>
+        <a class="btn" href="/reports">Reports</a>
+      </div>
+    </div>
 
-<div class="card">
-  <h3>Export</h3>
-  <p>
-    <a class="btn" href="/api/export/teachers.csv">Export teachers (CSV)</a>
-    <a class="btn" href="/api/export/students.csv">Export students (CSV)</a>
-  </p>
-</div>
+    <div class="card">
+      <h3>Export</h3>
+      <p style="margin:0 0 10px; color: var(--muted);">
+        Download current data as CSV files.
+      </p>
+      <div class="actions">
+        <a class="btn" href="/api/export/teachers.csv">Export teachers (CSV)</a>
+        <a class="btn" href="/api/export/students.csv">Export students (CSV)</a>
+      </div>
+    </div>
+  </div>
 
-<div class="card">
-  <h3>Import (CSV ze složky db/import)</h3>
-  <p>
-    <button class="btn" id="importTeachersBtn">Import teachers</button>
-    <button class="btn" id="importStudentsBtn">Import students</button>
-  </p>
-  <pre id="importResult" style="white-space: pre-wrap;"></pre>
-</div>
+  <div class="card" style="margin-top: 14px;">
+    <h3>Import (CSV from db/import)</h3>
+    <p style="margin:0 0 10px; color: var(--muted);">
+      Runs server-side import from predefined CSV files.
+    </p>
 
-<script>
-  async function runImport(url) {
-    const out = document.getElementById("importResult");
-    out.textContent = "Running import...";
-    try {
-      const resp = await fetch(url, { method: "POST" });
-      const text = await resp.text();
-      out.textContent = text;
-    } catch (e) {
-      out.textContent = "Import failed: " + e;
+    <div class="actions">
+      <button class="btn btn-primary" id="importTeachersBtn">Import teachers</button>
+      <button class="btn btn-primary" id="importStudentsBtn">Import students</button>
+    </div>
+
+    <div id="importResultBox" class="mono" style="margin-top: 12px; display:none;">
+      <pre id="importResult" style="white-space: pre-wrap; margin:0;"></pre>
+    </div>
+  </div>
+
+  <script>
+    async function runImport(url) {
+      const box = document.getElementById("importResultBox");
+      const out = document.getElementById("importResult");
+      box.style.display = "block";
+      out.textContent = "Running import...";
+      try {
+        const resp = await fetch(url, { method: "POST" });
+        const text = await resp.text();
+        out.textContent = text;
+      } catch (e) {
+        out.textContent = "Import failed: " + e;
+      }
     }
-  }
 
-  document.getElementById("importTeachersBtn").addEventListener("click", () => runImport("/api/import/teachers"));
-  document.getElementById("importStudentsBtn").addEventListener("click", () => runImport("/api/import/students"));
-</script>
+    document.getElementById("importTeachersBtn").addEventListener("click", () => runImport("/api/import/teachers"));
+    document.getElementById("importStudentsBtn").addEventListener("click", () => runImport("/api/import/students"));
+  </script>
 
 {% endblock %}

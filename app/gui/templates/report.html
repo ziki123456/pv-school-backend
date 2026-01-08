@@ -1,31 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Report známek</h1>
 
-  {% if rows|length == 0 %}
-    <p><em>Zatím nejsou žádná data (nebo nejsou známky).</em></p>
-  {% else %}
-    <table>
-      <thead>
-        <tr>
-          <th>Třída</th>
-          <th>Předmět</th>
-          <th>Počet známek</th>
-          <th>Průměr</th>
-          <th>Poslední známka</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in rows %}
-        <tr>
-          <td>{{ r.class_name }}</td>
-          <td>{{ r.subject_name }}</td>
-          <td>{{ r.grade_count }}</td>
-          <td>{{ "%.2f"|format(r.avg_grade) if r.avg_grade is not none else "" }}</td>
-          <td>{{ r.last_graded_at }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endif %}
+  <div class="card">
+    <h1 style="margin:0 0 8px;">Reports</h1>
+    <p style="margin:0; color: var(--muted);">
+      Aggregated grade report (view-based).
+    </p>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    {% if rows|length == 0 %}
+      <p style="margin:0; color: var(--muted);">
+        No data available yet (or no grades).
+      </p>
+    {% else %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Subject</th>
+            <th>Grades count</th>
+            <th>Average</th>
+            <th>Last graded at</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>{{ r.class_name }}</td>
+            <td>{{ r.subject_name }}</td>
+            <td>{{ r.grade_count }}</td>
+            <td>{{ "%.2f"|format(r.avg_grade) if r.avg_grade is not none else "" }}</td>
+            <td>{{ r.last_graded_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+
 {% endblock %}

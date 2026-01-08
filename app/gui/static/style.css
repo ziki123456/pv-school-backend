@@ -6,21 +6,33 @@
   --border: rgba(255,255,255,0.10);
   --btn: rgba(255,255,255,0.08);
   --btnHover: rgba(255,255,255,0.14);
+
+  /* helper tones for controls */
+  --controlBg: rgba(255,255,255,0.04);
+  --controlBgHover: rgba(255,255,255,0.06);
+  --focus: rgba(99,102,241,0.45);
+  --focusRing: rgba(99,102,241,0.12);
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+
+/* Pomáhá browseru renderovat nativní prvky (select/options) v dark režimu */
+:root{ color-scheme: dark; }
+
 body{
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background: radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.15), transparent 60%),
-              radial-gradient(1000px 500px at 80% 10%, rgba(34,197,94,0.12), transparent 60%),
-              var(--bg);
+  background:
+    radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,0.15), transparent 60%),
+    radial-gradient(1000px 500px at 80% 10%, rgba(34,197,94,0.12), transparent 60%),
+    var(--bg);
   color: var(--text);
 }
 
-a { color: inherit; }
+a{ color: inherit; }
 
+/* Layout */
 .container{
   max-width: 980px;
   margin: 0 auto;
@@ -39,6 +51,7 @@ a { color: inherit; }
   font-size: 22px;
   margin: 0 0 6px;
 }
+
 .brand p{
   margin: 0;
   color: var(--muted);
@@ -63,6 +76,7 @@ a { color: inherit; }
   background: rgba(255,255,255,0.07);
 }
 
+/* Cards / grid */
 .grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -93,6 +107,7 @@ a { color: inherit; }
   font-size: 14px;
 }
 
+/* Actions / buttons */
 .actions{
   display: flex;
   gap: 10px;
@@ -114,14 +129,22 @@ a { color: inherit; }
   font-size: 14px;
 }
 
-.btn:hover{
-  background: var(--btnHover);
-}
+.btn:hover{ background: var(--btnHover); }
+.btn:active{ transform: translateY(1px); }
 
-.btn:active{
-  transform: translateY(1px);
+.btn-primary{
+  background: rgba(99,102,241,0.20);
+  border-color: rgba(99,102,241,0.35);
 }
+.btn-primary:hover{ background: rgba(99,102,241,0.28); }
 
+.btn-danger{
+  background: rgba(239,68,68,0.18);
+  border-color: rgba(239,68,68,0.35);
+}
+.btn-danger:hover{ background: rgba(239,68,68,0.26); }
+
+/* Code / mono blocks */
 .mono{
   margin-top: 10px;
   background: rgba(0,0,0,0.25);
@@ -130,4 +153,117 @@ a { color: inherit; }
   padding: 12px;
   color: var(--text);
   overflow-x: auto;
+}
+
+/* Tables */
+.table{
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+}
+
+.table th, .table td{
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.table th{
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  background: rgba(255,255,255,0.04);
+}
+
+.table tr:hover td{
+  background: rgba(255,255,255,0.04);
+}
+
+/* Forms */
+.field{
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+label{
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Základní vzhled všech inputů (nechávám i textarea, kdyby se objevila) */
+input,
+select,
+textarea{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--controlBg);
+  color: var(--text);
+  outline: none;
+}
+
+/* Hover aby to působilo “živě” */
+input:hover,
+select:hover,
+textarea:hover{
+  background: var(--controlBgHover);
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color: var(--focus);
+  box-shadow: 0 0 0 4px var(--focusRing);
+}
+
+/* ===== Select dropdown (rozbalené možnosti) – FIX čitelnosti =====
+   Pozn.: nativní <option> se v některých kombinacích OS+browser styluje omezeně,
+   proto je tu !important a color-scheme: dark výše. */
+select{
+  /* necháme stejné jako input, jen explicitně pro jistotu */
+  background: var(--controlBg);
+  color: var(--text);
+}
+
+/* Rozbalené položky */
+select option{
+  background-color: #1a1f2e !important;
+  color: #e7eaf0 !important;
+}
+
+/* Vybraná / “hover” položka (funguje hlavně v Chrome/Edge; jinde se může ignorovat) */
+select option:checked,
+select option:hover{
+  background-color: #2a2f45 !important;
+  color: #ffffff !important;
+}
+
+/* Placeholder/disabled option */
+select option:disabled{
+  color: var(--muted) !important;
+}
+
+/* Alerts */
+.alert{
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+}
+
+.alert-error{
+  border-color: rgba(239,68,68,0.35);
+  background: rgba(239,68,68,0.10);
+}
+
+.alert-ok{
+  border-color: rgba(34,197,94,0.35);
+  background: rgba(34,197,94,0.10);
 }

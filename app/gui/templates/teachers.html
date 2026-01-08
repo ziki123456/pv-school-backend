@@ -1,34 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Teachers</h1>
 
-  {% if teachers and teachers|length > 0 %}
-    <table border="1" cellpadding="6" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Email</th>
-          <th>Active</th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for t in teachers %}
+  <div class="card">
+    <h1 style="margin:0 0 8px;">Teachers</h1>
+    <p style="margin:0; color: var(--muted);">
+      Browse all teachers stored in the database.
+    </p>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    {% if teachers and teachers|length > 0 %}
+      <table class="table">
+        <thead>
           <tr>
-            <td>{{ t.id_teacher }}</td>
-            <td>{{ t.first_name }}</td>
-            <td>{{ t.last_name }}</td>
-            <td>{{ t.email or "" }}</td>
-            <td>{{ "yes" if t.is_active else "no" }}</td>
-            <td><a href="/teachers/{{ t.id_teacher }}">Open</a></td>
+            <th style="width: 70px;">ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th style="width: 90px;">Active</th>
+            <th style="width: 110px;">Actions</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No teachers found.</p>
-  {% endif %}
+        </thead>
+        <tbody>
+          {% for t in teachers %}
+            <tr>
+              <td>{{ t.id_teacher }}</td>
+              <td>{{ t.first_name }}</td>
+              <td>{{ t.last_name }}</td>
+              <td>{{ t.email or "" }}</td>
+              <td>{{ "yes" if t.is_active else "no" }}</td>
+              <td><a class="btn" href="/teachers/{{ t.id_teacher }}">Open</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="margin:0; color: var(--muted);">No teachers found.</p>
+    {% endif %}
+  </div>
 
 {% endblock %}

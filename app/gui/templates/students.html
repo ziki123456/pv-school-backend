@@ -1,35 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Students</h1>
 
-  {% if students and students|length > 0 %}
-    <table border="1" cellpadding="6" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Birth date</th>
-          <th>Class ID</th>
-          <th>Active</th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for s in students %}
+  <div class="card">
+    <h1 style="margin:0 0 8px;">Students</h1>
+    <p style="margin:0; color: var(--muted);">
+      Browse all students stored in the database.
+    </p>
+  </div>
+
+  <div class="card" style="margin-top: 14px;">
+    {% if students and students|length > 0 %}
+      <table class="table">
+        <thead>
           <tr>
-            <td>{{ s.id_student }}</td>
-            <td>{{ s.first_name }}</td>
-            <td>{{ s.last_name }}</td>
-            <td>{{ s.birth_date or "" }}</td>
-            <td>{{ s.class_id or "" }}</td>
-            <td>{{ "yes" if s.is_active else "no" }}</td>
-            <td><a href="/students/{{ s.id_student }}">Open</a></td>
+            <th style="width: 70px;">ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Birth date</th>
+            <th style="width: 90px;">Class ID</th>
+            <th style="width: 80px;">Active</th>
+            <th style="width: 90px;">Detail</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No students found.</p>
-  {% endif %}
+        </thead>
+        <tbody>
+          {% for s in students %}
+            <tr>
+              <td>{{ s.id_student }}</td>
+              <td>{{ s.first_name }}</td>
+              <td>{{ s.last_name }}</td>
+              <td>{{ s.birth_date or "" }}</td>
+              <td>{{ s.class_id or "" }}</td>
+              <td>{{ "yes" if s.is_active else "no" }}</td>
+              <td><a class="btn" href="/students/{{ s.id_student }}">Open</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="margin:0; color: var(--muted);">No students found.</p>
+    {% endif %}
+  </div>
+
 {% endblock %}
