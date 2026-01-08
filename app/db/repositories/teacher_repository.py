@@ -78,5 +78,36 @@ class TeacherRepository:
             for r in rows
         ]
 
+    def update(self, teacher_id: int, data: TeacherCreate) -> bool:
+        """Update an existing teacher. Returns True if updated, else False."""
+        sql = """
+        UPDATE teacher
+        SET first_name = %s,
+            last_name = %s,
+            email = %s,
+            hired_date = %s,
+            is_active = %s
+        WHERE id_teacher = %s
+        """
+        with transaction(self._cfg) as conn:
+            cur = conn.cursor()
+            cur.execute(
+                sql,
+                (
+                    data.first_name,
+                    data.last_name,
+                    data.email,
+                    data.hired_date,
+                    1 if data.is_active else 0,
+                    int(teacher_id),
+                ),
+            )
+            return cur.rowcount > 0
 
-
+    def delete(self, teacher_id: int) -> bool:
+        """Delete a teacher by id. Returns True if deleted, else False."""
+        sql = "DELETE FROM teacher WHERE id_teacher = %s"
+        with transaction(self._cfg) as conn:
+            cur = conn.cursor()
+            cur.execute(sql, (int(teacher_id),))
+            return cur.rowcount > 0
