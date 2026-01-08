@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Student Detail</h1>
+
+  {% if student %}
+    <p><b>ID:</b> {{ student.id_student }}</p>
+    <p><b>First name:</b> {{ student.first_name }}</p>
+    <p><b>Last name:</b> {{ student.last_name }}</p>
+    <p><b>Birth date:</b> {{ student.birth_date or "" }}</p>
+    <p><b>Class ID:</b> {{ student.class_id or "" }}</p>
+    <p><b>Active:</b> {{ "yes" if student.is_active else "no" }}</p>
+    <p><b>Created at:</b> {{ student.created_at }}</p>
+    <p><b>Last grade at:</b> {{ student.last_grade_at or "" }}</p>
+
+    <p>
+      <a href="/students">← Back to list</a> |
+      <a href="/students/{{ student.id_student }}/edit">Edit</a>
+    </p>
+
+    <hr />
+
+    <h3>Delete student</h3>
+    <button id="deleteBtn">Delete</button>
+    <pre id="deleteResult" style="white-space: pre-wrap;"></pre>
+
+    <script>
+      document.getElementById("deleteBtn").addEventListener("click", async () => {
+        const out = document.getElementById("deleteResult");
+        out.textContent = "";
+
+        if (!confirm("Really delete this student?")) return;
+
+        try {
+          const resp = await fetch("/api/students/{{ student.id_student }}", { method: "DELETE" });
+          const text = await resp.text();
+
+          if (resp.ok) {
+            window.location.href = "/students";
+            return;
+          }
+
+          out.textContent = "Delete failed (" + resp.status + "): " + text;
+        } catch (e) {
+          out.textContent = "Delete failed: " + e;
+        }
+      });
+    </script>
+  {% else %}
+    <p><b>Student not found.</b></p>
+    <p><a href="/students">← Back to list</a></p>
+  {% endif %}
+
+{% endblock %}

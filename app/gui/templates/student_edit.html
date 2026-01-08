@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Edit Student</h1>
+
+  {% if student %}
+    <p><a href="/students/{{ student.id_student }}">← Back to detail</a></p>
+
+    <form id="editForm">
+      <label>First name</label><br />
+      <input type="text" name="first_name" value="{{ student.first_name }}" required /><br /><br />
+
+      <label>Last name</label><br />
+      <input type="text" name="last_name" value="{{ student.last_name }}" required /><br /><br />
+
+      <label>Birth date</label><br />
+      <input type="date" name="birth_date" value="{{ student.birth_date or '' }}" /><br /><br />
+
+      <label>Class ID</label><br />
+      <input type="number" name="class_id" value="{{ student.class_id or '' }}" /><br /><br />
+
+      <label>
+        <input type="checkbox" name="is_active" {% if student.is_active %}checked{% endif %} />
+        Active
+      </label><br /><br />
+
+      <button type="submit">Save</button>
+      <pre id="result" style="white-space: pre-wrap;"></pre>
+    </form>
+
+    <script>
+      document.getElementById("editForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const out = document.getElementById("result");
+        out.textContent = "";
+
+        const form = e.target;
+
+        const classVal = form.class_id.value ? parseInt(form.class_id.value, 10) : null;
+
+        const data = {
+          first_name: form.first_name.value,
+          last_name: form.last_name.value,
+          birth_date: form.birth_date.value ? form.birth_date.value : null,
+          class_id: Number.isFinite(classVal) ? classVal : null,
+          is_active: form.is_active.checked
+        };
+
+        try {
+          const resp = await fetch("/api/students/{{ student.id_student }}", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "accept": "application/json" },
+            body: JSON.stringify(data)
+          });
+
+          const text = await resp.text();
+
+          if (resp.ok) {
+            window.location.href = "/students/{{ student.id_student }}";
+            return;
+          }
+
+          out.textContent = "Update failed (" + resp.status + "): " + text;
+        } catch (err) {
+          out.textContent = "Update failed: " + err;
+        }
+      });
+    </script>
+  {% else %}
+    <p><b>Student not found.</b></p>
+    <p><a href="/students">← Back to list</a></p>
+  {% endif %}
+{% endblock %}
