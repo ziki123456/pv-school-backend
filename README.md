@@ -1,70 +1,70 @@
 # PV School Backend
 
-Backend application for **PV School** built with **FastAPI**.
+Backend application for PV School built with **FastAPI**.
 
-This repository contains the backend API used for managing PV School data. The project is designed to be easy to run on school computers, while still using modern Python features and best practices.
+This repository contains the backend API used for managing PV School data. The project is intended primarily for a school environment and focuses on clarity, reproducibility, and correct setup across different computers.
 
 ---
 
-## 🚀 Overview
+## Overview
 
 * **Framework:** FastAPI
 * **Language:** Python
 * **API type:** REST
-* **Target environment:** School / educational setup
+* **Environment:** Educational / school setup
 
-The backend uses modern Python syntax and strict project structure, so correct setup is important.
+The backend uses modern Python features and a strict project structure. Correct configuration is therefore essential.
 
 ---
 
-## ⚠️ Python Version Requirement (Very Important)
+## Python Version Requirement
 
-This project uses **modern Python type hints**, for example:
+This project uses modern Python type hints, for example:
 
 ```python
 int | None
 ```
 
-Because of this, the project **requires Python 3.10 or newer**.
+Because of this, **Python 3.10 or newer is required**.
 
-### ✅ Recommended version
+### Recommended version
 
-* **Python 3.13** (fully supported and tested)
+* Python 3.13
 
-### ❌ Common problem on school computers
+### Common issue on school computers
 
-On many school PCs, the `python` command still points to **Python 3.9**, even if a newer Python is installed.
+On many school computers, the `python` command still points to Python 3.9, even if a newer Python version is installed.
 
-This leads to errors such as:
+This causes runtime errors such as:
 
 ```
 TypeError: unsupported operand type(s) for |: 'type' and 'NoneType'
 ```
 
-### ✅ Solution
+### Solution
 
-* Use `py -3.13` instead of `python`
-* Or work inside a **virtual environment** (`.venv`)
+* Use `py -3.13` instead of `python`, or
+* Work inside a virtual environment (`.venv`)
 
 ---
 
-## 📁 Project Structure (Critical)
+## Project Structure
 
 After downloading the project from GitHub:
 
 1. Download the ZIP archive
-2. Extract the ZIP file
-3. **Open the correct project root folder**
+2. Extract the ZIP
+3. Open the correct project root directory
 
-### ✅ Correct project root must contain:
+### Correct project root contains
 
 * `app/`
 * `requirements.txt`
 * `config/`
 
-### ❌ Common mistake
+### Common mistake
 
-After extraction, the structure may look like this:
+After extraction, the directory structure may look like this:
 
 ```
 pv-school-backend-master/
@@ -73,19 +73,19 @@ pv-school-backend-master/
     ├── requirements.txt
 ```
 
-👉 **Always open the inner folder** (the one containing `app/` and `requirements.txt`).
+Always open the inner directory (the one containing `app/` and `requirements.txt`).
 
-If you open the wrong folder:
+Opening the wrong directory leads to:
 
-* imports will fail
-* IDE inspections will be incorrect
-* PyCharm will show false errors
+* broken imports
+* incorrect IDE inspections
+* misleading errors in PyCharm
 
 ---
 
-## 🧪 Recommended Setup (Virtual Environment)
+## Virtual Environment Setup (Recommended)
 
-Run the following commands in the **project root directory**:
+Run the following commands in the project root directory:
 
 ```powershell
 py -3.13 -m venv .venv
@@ -97,7 +97,7 @@ pip install -r requirements.txt
 
 ### If PowerShell script execution is blocked
 
-You can install dependencies directly using:
+Install dependencies directly using:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -105,36 +105,36 @@ You can install dependencies directly using:
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 1. Copy the example configuration file:
 
-```text
+```
 config/config.example.yaml → config/config.yaml
 ```
 
-2. Edit `config.yaml` and fill in:
+2. Edit `config.yaml` and fill in the required values:
 
-   * database credentials
-   * environment-specific settings
+* database credentials
+* environment-specific settings
 
 ---
 
-## ▶️ Running the Server
+## Running the Server
 
-### Option A — Inside virtual environment (recommended)
+### Option A — Using the virtual environment
 
 ```powershell
 python -m uvicorn app.main:app --reload
 ```
 
-### Option B — If `python` points to Python 3.9
+### Option B — If `python` points to an older version
 
 ```powershell
 py -3.13 -m uvicorn app.main:app --reload
 ```
 
-### If `uvicorn` is missing for Python 3.13
+### If `uvicorn` is not installed for Python 3.13
 
 ```powershell
 py -3.13 -m pip install -r requirements.txt
@@ -143,55 +143,49 @@ py -3.13 -m uvicorn app.main:app --reload
 
 ---
 
-## 🔍 Verify Python Version (Diagnostics)
+## Python Version Diagnostics
 
-To check which Python is actually running:
+To verify which Python interpreter is being used:
 
 ```powershell
 python -c "import sys; print(sys.version); print(sys.executable)"
 py -0p
 ```
 
-Make sure the active Python version is:
-
-* **3.10 or newer**
-* ideally **3.13**
+Ensure the active Python version is 3.10 or newer (ideally 3.13).
 
 ---
 
-## 🧠 PyCharm Notes (Red Errors but App Works)
+## PyCharm Notes
 
-Sometimes the application runs correctly, but PyCharm shows red warnings such as:
+In some cases, the application runs correctly, but PyCharm displays warnings such as:
 
 ```
 Unresolved reference 'router'
 ```
 
-These are **IDE-only issues**, not runtime errors.
+These warnings are IDE-related and do not indicate runtime errors.
 
 ### How to fix in PyCharm
 
-1. **Settings → Project → Python Interpreter**
-
-   * select `.venv` or Python 3.13
-
-2. Right-click project root → **Mark Directory as → Sources Root**
-
-3. **File → Invalidate Caches / Restart**
+1. Open **Settings → Project → Python Interpreter** and select `.venv` or Python 3.13
+2. Right-click the project root and select **Mark Directory as → Sources Root**
+3. Go to **File → Invalidate Caches / Restart**
 
 After reindexing, the warnings should disappear.
 
 ---
 
-## ✅ Summary
+## Summary
 
-* ✅ Python **3.10+ required** (recommended 3.13)
-* ✅ Use **`py -3.13`** or a **virtual environment**
-* ✅ Always open the **correct project root folder**
-* ⚠️ Red errors in PyCharm do **not** always mean runtime errors
+* Python 3.10 or newer is required
+* Python 3.13 is recommended
+* Always open the correct project root directory
+* Prefer using a virtual environment
+* IDE warnings do not necessarily indicate runtime errors
 
-If something works on one PC but not on another, the cause is almost always:
+If the project behaves differently across computers, the most common causes are:
 
-* wrong Python version
-* wrong project folder opened
-* missing or incorrect virtual environment
+* incorrect Python version
+* wrong project directory opened
+* missing or misconfigured virtual environment
