@@ -107,7 +107,8 @@ Install dependencies directly using:
 
 ## Configuration
 
-1. Copy the example configuration file:
+1. Copy the example configuration file (This project does NOT include `config.yaml` in the repository so you have to create it)
+:
 
 ```
 config/config.example.yaml → config/config.yaml
@@ -119,6 +120,47 @@ config/config.example.yaml → config/config.yaml
 * environment-specific settings
 
 ---
+## Database Initialization (MySQL)
+
+The project includes an SQL script that automatically creates:
+
+- the database `pv_school`
+- a database user `pv_user`
+- required privileges for the application
+
+No manual database or user creation is needed, as long as the script is executed correctly.
+
+### What the script does
+
+The following operations are performed:
+
+- creates the database `pv_school` (if it does not already exist)
+- creates the MySQL user `pv_user` (if it does not already exist)
+- grants full access to the `pv_school` database
+- applies UTF-8 encoding (`utf8mb4`)
+
+### How to run the script in MySQL Workbench
+
+1. Open **MySQL Workbench**
+2. Connect to your local MySQL server  
+   (usually as `root` or another administrative user)
+3. Open a new SQL tab
+4. Paste the provided SQL script into the editor
+5. Click **Execute** (lightning bolt icon)
+
+If the script runs without errors, the database and user are ready to use.
+
+### Application connection
+
+After running the script, configure the application to use:
+
+- **Database:** `pv_school`
+- **User:** `pv_user`
+- **Password:** `student`
+- **Host:** `127.0.0.1`
+
+Once the connection details are set correctly in the configuration file, the backend can connect to the database without any additional setup.
+
 
 ## Running the Server
 
