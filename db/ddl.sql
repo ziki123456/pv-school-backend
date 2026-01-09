@@ -1,4 +1,13 @@
 -- db/ddl.sql
+CREATE DATABASE IF NOT EXISTS pv_school
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'pv_user'@'127.0.0.1'
+IDENTIFIED BY 'student';
+
+GRANT ALL PRIVILEGES ON pv_school.* TO 'pv_user'@'127.0.0.1';
+FLUSH PRIVILEGES;
 
 CREATE TABLE IF NOT EXISTS teacher (
   id_teacher BIGINT NOT NULL AUTO_INCREMENT,
