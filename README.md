@@ -162,28 +162,160 @@ After running the script, configure the application to use:
 Once the connection details are set correctly in the configuration file, the backend can connect to the database without any additional setup.
 
 
-## Running the Server
+## Running the Application from Command Line (Required)
 
-### Option A — Using the virtual environment
+This project **must be runnable without any IDE**.  
+The following steps describe how to run the application **only using Command Prompt or PowerShell** on any computer.
+
+---
+
+### 1. Open Command Line in the project root
+
+After downloading and extracting the project from GitHub:
+
+1. Open **File Explorer**
+2. Navigate to the folder that contains:
+   - `app/`
+   - `requirements.txt`
+   - `config/`
+3. Click into the address bar
+4. Type `cmd` and press **Enter**
+
+This opens **Command Prompt directly in the correct project directory**.
+
+---
+
+### 2. Verify available Python versions
+
+Run:
+
+```powershell
+py -0p
+```
+
+Ensure that **Python 3.10 or newer** is available  
+(Recommended version: **Python 3.13**).
+
+---
+
+### 3. Create a virtual environment
+
+In the project root directory, run:
+
+```powershell
+py -3.13 -m venv .venv
+```
+
+If Python 3.13 is not available, use any version **≥ 3.10**, for example:
+
+```powershell
+py -3.11 -m venv .venv
+```
+
+---
+
+### 4. Activate the virtual environment
+
+**PowerShell:**
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+**Command Prompt (CMD):**
+```cmd
+.venv\Scripts\activate.bat
+```
+
+After activation, the command line should start with:
+
+```
+(.venv)
+```
+
+---
+
+### 5. Install project dependencies
+
+```powershell
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+If this fails, use the explicit interpreter:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+---
+
+### 6. Create and configure the configuration file
+
+This repository does **not** include `config.yaml`.
+
+1. Copy:
+```
+config/config.example.yaml
+```
+
+2. Rename it to:
+```
+config/config.yaml
+```
+
+3. Edit `config.yaml` and set correct database connection values.
+
+---
+
+### 7. Initialize the MySQL database
+
+Run the provided SQL script in **MySQL Workbench**.
+
+The script automatically:
+- creates database `pv_school`
+- creates user `pv_user`
+- grants required privileges
+
+After successful execution, the database is ready.
+
+---
+
+### 8. Start the FastAPI server
+
+Run:
 
 ```powershell
 python -m uvicorn app.main:app --reload
 ```
 
-### Option B — If `python` points to an older version
+If `python` points to an older version:
 
 ```powershell
-py -3.13 -m uvicorn app.main:app --reload
-```
-
-### If `uvicorn` is not installed for Python 3.13
-
-```powershell
-py -3.13 -m pip install -r requirements.txt
 py -3.13 -m uvicorn app.main:app --reload
 ```
 
 ---
+
+### 9. Verify the application is running
+
+Open a web browser:
+
+- GUI:  
+  http://127.0.0.1:8000/
+
+- API documentation (Swagger):  
+  http://127.0.0.1:8000/docs
+
+If these pages load correctly, the application is running.
+
+---
+
+## Notes for Evaluation
+
+- The application **does not require PyCharm or any IDE**
+- All steps can be executed using **Command Prompt / PowerShell only**
+- Using a virtual environment is required
+- Python version must be **3.10 or newer**
 
 ## Python Version Diagnostics
 
